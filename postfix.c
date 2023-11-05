@@ -7,7 +7,22 @@
 int stack[MAX_STACK_SIZE];
 int top = -1;
 
-int calc(int num1, int num2, char op);
+int calc(int num1, int num2, char op) {
+    switch (op) {
+        case '+':
+            return num1 + num2;
+        case '-':
+            return num1 - num2;
+        case '*':
+            return num1 * num2;
+        case '/':
+            return num1 / num2;
+        case '%':
+            return num1 % num2;
+        default:
+            return 0;  
+    }
+}
 
 int main() {
     char s[100];
@@ -42,19 +57,4 @@ int main() {
     return 0;
 }
 
-int calc(int num1, int num2, char op) {
-    switch (op) {
-        case '+':
-            return num1 + num2;
-        case '-':
-            return num1 - num2;
-        case '*':
-            return num1 * num2;
-        case '/':
-            return num1 / num2;
-        case '%':
-            return num1 % num2;
-        default:
-            return 0;  // Handle invalid operator
-    }
-}
+
