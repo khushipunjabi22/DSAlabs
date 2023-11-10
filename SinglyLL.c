@@ -3,21 +3,14 @@
 
 struct node {
     int data;
-    struct node *next;
+    struct node* next;
 };
 
-struct node *head = NULL;
-int pos, i = 1, count = 0;
-
-void create() {
-    struct node *newnode = (struct node *)malloc(sizeof(struct node));
-    printf("Enter data: ");
-    scanf("%d", &newnode->data);
-    newnode->next = NULL;
-}
+struct node* head = 0;
+int count = 0, i = 0, pos;
 
 void insertatbeg() {
-    struct node *newnode = (struct node *)malloc(sizeof(struct node));
+    struct node* newnode = (struct node*)malloc(sizeof(struct node));
     printf("Enter data: ");
     scanf("%d", &newnode->data);
     newnode->next = head;
@@ -26,32 +19,37 @@ void insertatbeg() {
 }
 
 void insertatend() {
-    struct node *newnode = (struct node *)malloc(sizeof(struct node));
-    printf("Enter data: ");
-    scanf("%d", &newnode->data);
-    newnode->next = NULL;
     if (head == NULL) {
-        head = newnode;
-    } else {
-        struct node *temp = head;
-        while (temp->next != NULL) {
+        insertatbeg();
+    }
+    else {
+        struct node* newnode = (struct node*)malloc(sizeof(struct node));
+        printf("Enter data: ");
+        scanf("%d", &newnode->data);
+        struct node* temp = head;
+        while (temp->next != 0) {
             temp = temp->next;
         }
         temp->next = newnode;
+        newnode->next = NULL; // Set the next pointer of the new node to NULL
+        count++;
     }
-    count++;
 }
 
-void insertinmid() {
+void insertatmid() {
     printf("Enter position: ");
     scanf("%d", &pos);
     if (pos > count) {
         printf("Invalid position\n");
-    } else {
-        struct node *newnode = (struct node *)malloc(sizeof(struct node));
+    }
+    else if (pos == 1) {
+        insertatbeg();
+    }
+    else {
+        struct node* newnode = (struct node*)malloc(sizeof(struct node));
         printf("Enter data: ");
         scanf("%d", &newnode->data);
-        struct node *temp = head;
+        struct node* temp = head;
         while (i < pos - 1) {
             temp = temp->next;
             i++;
@@ -64,10 +62,12 @@ void insertinmid() {
 
 void deleteatbeg() {
     if (head == NULL) {
-        printf("List is empty. Nothing to delete.\n");
-    } else {
-        struct node *temp = head;
+        printf("Empty\n");
+    }
+    else {
+        struct node* temp = head;
         head = head->next;
+        temp->next = NULL; // Set the next pointer of the deleted node to NULL
         free(temp);
         count--;
     }
@@ -75,49 +75,48 @@ void deleteatbeg() {
 
 void deleteatend() {
     if (head == NULL) {
-        printf("List is empty. Nothing to delete.\n");
-    } else if (head->next == NULL) {
-        free(head);
-        head = NULL;
-        count--;
-    } else {
-        struct node *temp = head;
-        while (temp->next->next != NULL) {
+        printf("Empty\n");
+    }
+    else {
+        struct node* temp = head, * prevnode;
+        while (temp->next != 0) {
+            prevnode = temp;
             temp = temp->next;
         }
-        free(temp->next);
-        temp->next = NULL;
+        if (head == temp) {
+            head = NULL;
+        }
+        else {
+            prevnode->next = NULL; // Set the next pointer of the previous node to NULL
+        }
+        free(temp);
         count--;
     }
 }
 
-void deleteinmid() {
-    if (head == NULL) {
-        printf("List is empty. Nothing to delete.\n");
-    } else {
-        printf("Enter position: ");
-        scanf("%d", &pos);
-        if (pos > count || pos < 1) {
-            printf("Invalid position\n");
-        } else if (pos == 1) {
-            deleteatbeg();
-        } else if (pos == count) {
-            deleteatend();
-        } else {
-            struct node *temp = head;
-            for (i = 1; i < pos - 1; i++) {
-                temp = temp->next;
-            }
-            struct node *temp2 = temp->next;
-            temp->next = temp2->next;
-            free(temp2);
-            count--;
+void deleteatmid() {
+    if (pos > count) {
+        printf("Invalid position\n");
+    }
+    else if (pos == 1) {
+        deleteatbeg();
+    }
+    else {
+        struct node* temp = head, * nextnode;
+        while (i < pos - 1) {
+            temp = temp->next;
+            i++;
         }
+        nextnode = temp->next;
+        temp->next = nextnode->next;
+        nextnode->next = NULL; // Set the next pointer of the deleted node to NULL
+        free(nextnode);
+        count--;
     }
 }
 
 void display() {
-    struct node *temp = head;
+    struct node* temp = head;
     while (temp != NULL) {
         printf("%d ", temp->data);
         temp = temp->next;
@@ -147,7 +146,7 @@ int main() {
                 insertatend();
                 break;
             case 3:
-                insertinmid();
+                insertatmid();
                 break;
             case 4:
                 deleteatbeg();
@@ -156,7 +155,7 @@ int main() {
                 deleteatend();
                 break;
             case 6:
-                deleteinmid();
+                deleteatmid();
                 break;
             case 7:
                 display();
